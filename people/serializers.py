@@ -7,7 +7,7 @@ class NeighborSerializer(serializers.Serializer):
     x_coord = serializers.FloatField()
     y_coord = serializers.FloatField()
     name = serializers.CharField()
-    id = serializers.IntegerField(pk=True)
+    id = serializers.IntegerField()
 
     def create(self, validated_data):
         return Neighbor.objects.create(**validated_data)
