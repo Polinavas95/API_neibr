@@ -6,4 +6,5 @@ app_name = 'people'
 
 urlpatterns = [
     path('people/', NeighborView.as_view()),
+    path('people/<int:pk>', NeighborView.as_view()),
 ]
