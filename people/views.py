@@ -1,10 +1,11 @@
+from django.db.models import F
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Neighbor
-from .serializers import NeighborSerializer
+from .serializers import NeighborSerializer, RadiusSearchSerializer
 import math
 
 
@@ -12,6 +13,8 @@ class NeighborView(APIView):
 
     def get(self, request):
         neighbors = Neighbor.objects.all()
+        if neighbors.count() == 0:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = NeighborSerializer(neighbors, many=True)
         return Response({'neighbors': serializer.data}, status=status.HTTP_200_OK)
 
@@ -40,4 +43,13 @@ class NeighborView(APIView):
             'message': f'Article with id `{pk}` has been deleted.'},
             status=204)
 
+
+class RadiusGetView(APIView):
+
+    def get(self, request, x1: float, y1: float, radius: float, quantity: int = 10):
+        neighbors = Neighbor.objects.annotate(
+            distance=((F('x_coord') - x1) ** 2 + (F('y_coord') - y1) ** 2) ** 0.5
+        ).filter(distance__lte=radius)[:quantity]
+        serializer = RadiusSearchSerializer(neighbors, many=True)
+        return Response({'neighbors': serializer.data}, status=status.HTTP_200_OK)
 

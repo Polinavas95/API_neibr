@@ -18,3 +18,10 @@ class NeighborSerializer(serializers.Serializer):
         instance.id = validated_data.get('id', instance.id)
         instance.save()
         return instance
+
+
+class RadiusSearchSerializer(serializers.Serializer):
+    x_coord = serializers.FloatField()
+    y_coord = serializers.FloatField()
+    name = serializers.CharField()
+    distance = serializers.FloatField()
