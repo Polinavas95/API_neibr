@@ -76,5 +76,5 @@ class DistanceGetNeighborView(APIView):
         if neighbors.count() == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = RadiusSearchSerializer(neighbors, many=True)
-        return Response({'neighbor': serializer.data}, status=status.HTTP_200_OK)
+        return Response({ neighbor.name : serializer.data}, status=status.HTTP_200_OK)
 
