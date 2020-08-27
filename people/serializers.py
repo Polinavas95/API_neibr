@@ -21,7 +21,7 @@ class NeighborSerializer(serializers.Serializer):
 
 
 class RadiusSearchSerializer(serializers.Serializer):
-    x_coord = serializers.FloatField()
-    y_coord = serializers.FloatField()
+    x_coord = serializers.DecimalField(max_digits=5, decimal_places=2, coerce_to_string=False)
+    y_coord = serializers.DecimalField(max_digits=5, decimal_places=2, coerce_to_string=False)
     name = serializers.CharField()
-    distance = serializers.FloatField()
+    distance = serializers.DecimalField(max_digits=5, decimal_places=2)

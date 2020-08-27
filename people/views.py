@@ -6,7 +6,6 @@ from rest_framework.views import APIView
 
 from .models import Neighbor
 from .serializers import NeighborSerializer, RadiusSearchSerializer
-import math
 
 
 class NeighborView(APIView):
@@ -38,18 +37,44 @@ class NeighborView(APIView):
 
     def delete(self, request, pk):
         neighbor = get_object_or_404(Neighbor.objects.all(), pk=pk)
+        if neighbor.count() == 0:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         neighbor.delete()
         return Response({
             'message': f'Article with id `{pk}` has been deleted.'},
             status=204)
 
 
-class RadiusGetView(APIView):
+class DistanceGetView(APIView):
 
-    def get(self, request, x1: float, y1: float, radius: float, quantity: int = 10):
+    def get(self, request):
+        x1 = float(request.GET.get('x1'))
+        y1 = float(request.GET.get('y1'))
+        radius = float(request.GET.get('radius'))
+        quantity = float(request.GET.get('quantity'))
         neighbors = Neighbor.objects.annotate(
             distance=((F('x_coord') - x1) ** 2 + (F('y_coord') - y1) ** 2) ** 0.5
         ).filter(distance__lte=radius)[:quantity]
+        if neighbors.count() == 0:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = RadiusSearchSerializer(neighbors, many=True)
         return Response({'neighbors': serializer.data}, status=status.HTTP_200_OK)
+
+
+class DistanceGetNeighborView(APIView):
+    def get(self, request, id):
+        neighbor = get_object_or_404(Neighbor, id=id)
+        x1 = neighbor.x_coord
+        y1 = neighbor.y_coord
+        radius = float(request.GET.get('radius'))
+        quantity = float(request.GET.get('quantity'))
+        neighbors = Neighbor.objects.annotate(
+            distance=(
+                             (F('x_coord') - x1) ** 2 + (F('y_coord') - y1) ** 2)
+                     ** 0.5).filter(distance__lte=radius
+                                    )[:quantity]
+        if neighbors.count() == 0:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = RadiusSearchSerializer(neighbors, many=True)
+        return Response({'neighbor': serializer.data}, status=status.HTTP_200_OK)
 
