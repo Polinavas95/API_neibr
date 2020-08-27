@@ -72,7 +72,7 @@ class DistanceGetNeighborView(APIView):
             distance=(
                              (F('x_coord') - x1) ** 2 + (F('y_coord') - y1) ** 2)
                      ** 0.5).filter(distance__lte=radius
-                                    )[:quantity]
+                                    ).exclude(id=id)[:quantity]
         if neighbors.count() == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = RadiusSearchSerializer(neighbors, many=True)
