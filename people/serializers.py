@@ -24,4 +24,4 @@ class RadiusSearchSerializer(serializers.Serializer):
     x_coord = serializers.DecimalField(max_digits=5, decimal_places=2, coerce_to_string=False)
     y_coord = serializers.DecimalField(max_digits=5, decimal_places=2, coerce_to_string=False)
     name = serializers.CharField()
-    distance = serializers.DecimalField(max_digits=5, decimal_places=2)
+    distance = serializers.DecimalField(max_digits=5, decimal_places=2, coerce_to_string=False)
