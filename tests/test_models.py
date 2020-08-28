@@ -1,25 +1,46 @@
 from django.test import TestCase
 
+from people.models import Neighbor
+
 
 class ModelsTestClass(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        print("setUpTestData: Run once to set up non-modified data for all class methods.")
-        pass
+        # Set up non-modified objects used by all test methods
+        Neighbor.objects.create(x_coord=23.45, y_coord=10.34, name='Bob')
 
-    def setUp(self):
-        print("setUp: Run once for every test method to setup clean data.")
-        pass
+    def test_name_label(self):
+        neighbor = Neighbor.objects.get(id=1)
+        field_label = neighbor._meta.get_field('name').verbose_name
+        self.assertEquals(field_label, 'name')
 
-    def test_false_is_false(self):
-        print("Method: test_false_is_false.")
-        self.assertFalse(False)
+    def test_name_max_length(self):
+        neighbor = Neighbor.objects.get(id=1)
+        max_length = neighbor._meta.get_field('name').max_length
+        self.assertEquals(max_length, 50)
 
-    def test_false_is_true(self):
-        print("Method: test_false_is_true.")
-        self.assertTrue(False)
+    def test_x_coord_maximum_digits(self):
+        neighbor = Neighbor.objects.get(id=1)
+        max_digits = neighbor._meta.get_field('x_coord').max_digits
+        self.assertEquals(max_digits, 5)
 
-    def test_one_plus_one_equals_two(self):
-        print("Method: test_one_plus_one_equals_two.")
-        self.assertEqual(1 + 1, 2)
+    def test_x_coord_decimal_places(self):
+        neighbor = Neighbor.objects.get(id=1)
+        decimal_places = neighbor._meta.get_field('x_coord').decimal_places
+        self.assertEquals(decimal_places, 2)
+
+    def test_y_coord_maximum_digits(self):
+        neighbor = Neighbor.objects.get(id=1)
+        max_digits = neighbor._meta.get_field('y_coord').max_digits
+        self.assertEquals(max_digits, 5)
+
+    def test_y_coord_decimal_places(self):
+        neighbor = Neighbor.objects.get(id=1)
+        decimal_places = neighbor._meta.get_field('y_coord').decimal_places
+        self.assertEquals(decimal_places, 2)
+
+    def test_object_name_is_name(self):
+        neighbor = Neighbor.objects.get(id=1)
+        expected_object_name = neighbor.name
+        self.assertEquals(expected_object_name, str(neighbor))
