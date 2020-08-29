@@ -46,12 +46,7 @@ class NeighborView(APIView):
 
 
 class DistanceGetView(APIView):
-
-    def get(self, request):
-        x1 = float(request.GET.get('x1'))
-        y1 = float(request.GET.get('y1'))
-        radius = float(request.GET.get('radius'))
-        quantity = float(request.GET.get('quantity'))
+    def get(self, request, x1, y1, radius, quantity):
         neighbors = Neighbor.objects.annotate(
             distance=((F('x_coord') - x1) ** 2 + (F('y_coord') - y1) ** 2) ** 0.5
         ).filter(distance__lte=radius)[:quantity]
@@ -62,6 +57,7 @@ class DistanceGetView(APIView):
 
 
 class DistanceGetNeighborView(APIView):
+
     def get(self, request, id):
         neighbor = get_object_or_404(Neighbor, id=id)
         x1 = neighbor.x_coord
@@ -77,4 +73,3 @@ class DistanceGetNeighborView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = RadiusSearchSerializer(neighbors, many=True)
         return Response({ neighbor.name : serializer.data}, status=status.HTTP_200_OK)
-

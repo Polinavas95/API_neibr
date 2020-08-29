@@ -3,7 +3,6 @@ from .views import NeighborView, DistanceGetView, DistanceGetNeighborView
 
 app_name = 'people'
 
-
 urlpatterns = [
     path('people/', NeighborView.as_view(), name='all_neighbors'),
     path('people/<int:pk>', NeighborView.as_view(), name='neighbor_action'),
