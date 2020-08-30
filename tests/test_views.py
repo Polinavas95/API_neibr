@@ -41,9 +41,3 @@ class GetAllNeighborsTest(APITestCase, URLPatternsTestCase):
         self.assertEqual(response1.status_code, status.HTTP_200_OK)
         response2 = self.client.get('/api/people/?id=3/search', format='json')
         self.assertEqual(response2.status_code, status.HTTP_200_OK)
-
-
-
-
-
-
